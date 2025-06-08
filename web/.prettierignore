@@ -1,0 +1,3 @@
+src/types/db.d.ts
+dist
+node_modules

@@ -1,0 +1,32 @@
+{
+  "name": "event-photos-app",
+  "version": "1.0.0",
+  "description": "Event Photos App - Monorepo with React frontend, Node.js backend, and database management",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel --filter web --filter server dev",
+    "build": "pnpm --filter db build && pnpm --filter server build && pnpm --filter web build",
+    "start": "pnpm --parallel --filter web --filter server start",
+    "test": "pnpm --recursive test",
+    "lint": "pnpm --recursive lint",
+    "clean": "pnpm --recursive clean && rm -rf node_modules",
+    "install:all": "pnpm install",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "ts": "pnpm --recursive ts"
+  },
+  "keywords": [
+    "event",
+    "photos",
+    "react",
+    "nodejs",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,28 @@
+# Node.js
+node_modules/
+npm-debug.log
+
+# pnpm
+.pnpm-debug.log*
+.pnpm-store/
+
+# React
+build/
+coverage/
+.env*
+!.env.example
+
+# Logs
+logs
+*.log
+
+# IDE
+.idea/
+.vscode/
+
+# Build
+dist/
+
+# Package managers
+package-lock.json
+yarn.lock
