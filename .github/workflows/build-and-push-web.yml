@@ -1,0 +1,45 @@
+name: Build and push to DOCR - Web
+
+on:
+  push:
+    branches:
+      - prod
+    paths:
+      - "web/**"
+  workflow_dispatch:
+
+env:
+  ENVIRONMENT: ${{ github.ref_name }}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-push-deploy-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      # Install doctl.
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      # Build a Docker image of your application in your registry and tag the image with the $GITHUB_SHA.
+      - name: Build container image
+        run: |
+          docker build \
+            --build-arg VITE_APP_API_URL=${{ vars.VITE_APP_API_URL }} \
+            --build-arg VITE_APP_API_BASE_PATH=${{ vars.VITE_APP_API_BASE_PATH }} \
+            -t ${{ vars.DIGITALOCEAN_REGISTRY_NAME }}/app:web \
+            -f ./web/Dockerfile \
+            ./web
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 1200
+
+      - name: Push image to DigitalOcean Container Registry
+        run: docker push ${{ vars.DIGITALOCEAN_REGISTRY_NAME }}/app:web
