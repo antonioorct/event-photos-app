@@ -46,6 +46,7 @@ const config = {
         accessKey: env.S3_ACCESS_KEY as string,
         secretKey: env.S3_SECRET_KEY as string,
         endpoint: env.S3_ENDPOINT as string,
+        cdnEndpoint: env.S3_CDN_ENDPOINT as string,
         bucket: env.S3_BUCKET as string,
         region: env.S3_REGION as string,
     },

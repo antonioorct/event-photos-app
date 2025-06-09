@@ -10,7 +10,7 @@ import {
 import JSZip from "jszip";
 
 export const s3Client = new S3({
-    forcePathStyle: true,
+    forcePathStyle: false,
     endpoint: config.s3.endpoint,
     region: config.s3.region,
     credentials: {
@@ -36,6 +36,7 @@ export async function saveFileToS3(
         Key: fileName,
         Body: fileBuffer,
         ContentType: contentType,
+        ACL: "public-read",
     });
 
     await s3Client.send(command);
@@ -115,7 +116,8 @@ export async function downloadAndZipS3Directory(
 }
 
 export function getPublicUrlForFile(fileName: string) {
+    const endpoint = new URL(config.s3.cdnEndpoint);
     return `${
-        config.env.dev ? "http://localhost:4566" : config.s3.endpoint
-    }/${config.s3.bucket}/${fileName}`;
+        config.env.dev ? "http://localhost:4566/" : endpoint.toString()
+    }${fileName}`;
 }
