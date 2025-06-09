@@ -114,16 +114,40 @@ export default function Slideshow() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-xl">Učitavanje fotografija...</div>
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#000000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        <div
+          style={{
+            color: "#ffffff",
+            fontSize: "20px",
+          }}>
+          Učitavanje fotografija...
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-red-500 text-xl">
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#000000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        <div
+          style={{
+            color: "#ef4444",
+            fontSize: "20px",
+          }}>
           Greška pri učitavanju fotografija
         </div>
       </div>
@@ -132,56 +156,173 @@ export default function Slideshow() {
 
   if (!images || images.length === 0) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-xl">Nema fotografija za prikaz</div>
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#000000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        <div
+          style={{
+            color: "#ffffff",
+            fontSize: "20px",
+          }}>
+          Nema fotografija za prikaz
+        </div>
       </div>
     );
   }
 
   if (!isStarted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#000000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "16px",
+        }}>
+        <div
+          style={{
+            maxWidth: "448px",
+            width: "100%",
+            backgroundColor: "#1f1f1f",
+            borderRadius: "8px",
+            boxShadow:
+              "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+            padding: "32px",
+          }}>
+          <div
+            style={{
+              textAlign: "center",
+              marginBottom: "32px",
+            }}>
+            <h1
+              style={{
+                fontSize: "30px",
+                fontWeight: "bold",
+                color: "#ffffff",
+                marginBottom: "8px",
+              }}>
               Slideshow postavke
             </h1>
-            <p className="text-gray-600">Prilagodite postavke prije početka</p>
+            <p
+              style={{
+                color: "#d1d5db",
+              }}>
+              Prilagodite postavke prije početka
+            </p>
           </div>
 
-          <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+          <div
+            style={{
+              marginBottom: "32px",
+            }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#ffffff",
+                marginBottom: "12px",
+              }}>
               Trajanje razmaka između slika
             </label>
-            <div className="flex items-center space-x-3">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+              }}>
               <input
                 type="number"
                 min="1"
                 max="60"
                 value={intervalSeconds}
                 onChange={(e) => setIntervalSeconds(Number(e.target.value))}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  flex: "1",
+                  padding: "8px 12px",
+                  border: "1px solid #4b5563",
+                  borderRadius: "6px",
+                  outline: "none",
+                  backgroundColor: "#374151",
+                  color: "#ffffff",
+                }}
               />
-              <span className="text-gray-600 font-medium">sekundi</span>
+              <span
+                style={{
+                  color: "#d1d5db",
+                  fontWeight: "500",
+                }}>
+                sekundi
+              </span>
             </div>
-            <p className="text-sm text-gray-500 mt-2">Standardno: 10 sekundi</p>
+            <p
+              style={{
+                fontSize: "14px",
+                color: "#9ca3af",
+                marginTop: "8px",
+              }}>
+              Standardno: 10 sekundi
+            </p>
           </div>
 
-          <div className="space-y-4">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}>
             <button
               onClick={startSlideshow}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200">
+              style={{
+                width: "100%",
+                backgroundColor: "#2563eb",
+                color: "#ffffff",
+                fontWeight: "600",
+                padding: "12px 24px",
+                borderRadius: "8px",
+                boxShadow:
+                  "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                border: "none",
+                cursor: "pointer",
+                transition: "background-color 0.2s",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.backgroundColor = "#1d4ed8")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.backgroundColor = "#2563eb")
+              }>
               Pokreni slideshow
             </button>
 
             <Link
               to="/"
-              className="block w-full text-center text-gray-600 hover:text-gray-800 transition-colors duration-200">
+              style={{
+                display: "block",
+                width: "100%",
+                textAlign: "center",
+                color: "#d1d5db",
+                textDecoration: "none",
+                transition: "color 0.2s",
+              }}>
               ← Natrag na početnu
             </Link>
           </div>
 
-          <div className="mt-6 text-center text-sm text-gray-500">
+          <div
+            style={{
+              marginTop: "24px",
+              textAlign: "center",
+              fontSize: "14px",
+              color: "#9ca3af",
+            }}>
             {queueRef.current.getImageCount()}{" "}
             {queueRef.current.getImageCount() === 1
               ? "fotografija"
@@ -195,18 +336,42 @@ export default function Slideshow() {
 
   if (!currentImage) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-xl">Učitavanje fotografija...</div>
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#000000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        <div
+          style={{
+            color: "#ffffff",
+            fontSize: "20px",
+          }}>
+          Učitavanje fotografija...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-screen bg-black flex items-center justify-center">
+    <div
+      style={{
+        width: "100%",
+        height: "100vh",
+        backgroundColor: "#000000",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
       <img
         src={currentImage}
         alt="Slideshow fotografija"
-        className="h-full object-contain"
+        style={{
+          height: "100%",
+          objectFit: "contain",
+        }}
       />
     </div>
   );
