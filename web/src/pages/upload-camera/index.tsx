@@ -22,7 +22,6 @@ export default function UploadFromCamera() {
   const openCamera = async () => {
     try {
       setCameraError(null);
-
       setIsCameraOpen(true);
     } catch (error) {
       console.error("Camera permission error:", error);
@@ -97,7 +96,7 @@ export default function UploadFromCamera() {
       });
 
       await uploadMutation.mutateAsync(file);
-      navigate("/images");
+      navigate("/upload/complete");
     } catch (error) {
       console.error("Upload failed:", error);
     }
@@ -108,10 +107,80 @@ export default function UploadFromCamera() {
     closeCamera();
   };
 
+  // Fullscreen camera interface
+  if (isCameraOpen) {
+    return (
+      <div className="w-full h-screen bg-black relative overflow-hidden">
+        {/* Camera View */}
+        <div className="w-full h-full">
+          <div className={`w-full h-full ${isFlipped ? "scale-x-[-1]" : ""}`}>
+            <Camera
+              ref={camera}
+              aspectRatio="cover"
+              facingMode={facingMode}
+              errorMessages={{
+                noCameraAccessible:
+                  "Kamera nije dostupna. Molimo spojite kameru ili pokušajte drugi pregljednik.",
+                permissionDenied:
+                  "Dozvola odbijena. Molimo osvježite stranicu i dajte dozvolu za kameru.",
+                switchCamera:
+                  "Nije moguće prebaciti kameru jer je dostupna samo jedna.",
+                canvas: "Canvas nije podržan.",
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Top Controls */}
+        <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-6 z-10">
+          {/* Back Button */}
+          <button
+            onClick={cancelCapture}
+            className="w-12 h-12 bg-black bg-opacity-50 rounded-full flex items-center justify-center text-white hover:bg-opacity-70 transition-all">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          {/* Swap Camera Button */}
+          <button
+            onClick={switchCamera}
+            className="w-12 h-12 bg-black bg-opacity-50 rounded-full flex items-center justify-center text-white hover:bg-opacity-70 transition-all">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2">
+              <path d="M17 2l4 4-4 4M3 6h18M7 22l-4-4 4-4M21 18H3" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Bottom Controls */}
+        <div className="absolute bottom-0 left-0 right-0 flex justify-center items-center p-8 z-10">
+          {/* Capture Button */}
+          <button
+            onClick={captureImage}
+            className="w-20 h-20 bg-white rounded-full border-4 border-gray-300 hover:border-gray-400 transition-all shadow-lg flex items-center justify-center">
+            <div className="w-16 h-16 bg-white rounded-full border-2 border-gray-400"></div>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-2xl mx-auto">
-        {!isCameraOpen && !capturedImage && (
+        {!capturedImage && (
           <div className="mb-8">
             <Link
               to="/upload"
@@ -126,7 +195,7 @@ export default function UploadFromCamera() {
             Snimite kamerom
           </h1>
 
-          {!isCameraOpen && !capturedImage && (
+          {!capturedImage && (
             <div className="bg-white p-8 rounded-lg shadow-md">
               <p className="text-gray-600 mb-8">
                 Snimite fotografiju direktno kamerom
@@ -160,68 +229,6 @@ export default function UploadFromCamera() {
                   />
                 </svg>
                 <span>Otvori kameru</span>
-              </button>
-            </div>
-          )}
-
-          {isCameraOpen && (
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <div className="mb-4 flex justify-between items-center">
-                <button
-                  onClick={cancelCapture}
-                  className="text-gray-600 hover:text-gray-800 transition-colors duration-200">
-                  ← Natrag
-                </button>
-                <h3 className="text-lg font-semibold">
-                  {facingMode === "environment"
-                    ? "Stražnja kamera"
-                    : "Prednja kamera"}
-                </h3>
-
-                <button
-                  onClick={switchCamera}
-                  className="text-blue-600 hover:text-blue-800 transition-colors duration-200 text-2xl"
-                  title="Prebaci kameru">
-                  🔄
-                </button>
-              </div>
-
-              <div className="mb-4 flex justify-center space-x-4">
-                <button
-                  onClick={toggleFlip}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
-                    isFlipped
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  }`}
-                  title="Preokreni horizontalno">
-                  ↔️ Preokreni
-                </button>
-              </div>
-
-              <div className="relative mb-6 max-w-md mx-auto">
-                <div className={`${isFlipped ? "scale-x-[-1]" : ""}`}>
-                  <Camera
-                    ref={camera}
-                    aspectRatio={9 / 16}
-                    facingMode={facingMode}
-                    errorMessages={{
-                      noCameraAccessible:
-                        "Kamera nije dostupna. Molimo spojite kameru ili pokušajte drugi pregljednik.",
-                      permissionDenied:
-                        "Dozvola odbijena. Molimo osvježite stranicu i dajte dozvolu za kameru.",
-                      switchCamera:
-                        "Nije moguće prebaciti kameru jer je dostupna samo jedna.",
-                      canvas: "Canvas nije podržan.",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <button
-                onClick={captureImage}
-                className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition-colors duration-200">
-                📸 Snimite
               </button>
             </div>
           )}

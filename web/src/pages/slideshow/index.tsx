@@ -116,7 +116,7 @@ export default function Slideshow() {
     return (
       <div
         style={{
-          minHeight: "100vh",
+          minHeight: "100dvh",
           backgroundColor: "#000000",
           display: "flex",
           alignItems: "center",

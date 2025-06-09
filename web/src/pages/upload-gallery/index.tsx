@@ -53,7 +53,7 @@ export default function UploadFromGallery() {
 
     try {
       await uploadMutation.mutateAsync(selectedFile);
-      navigate("/images");
+      navigate("/upload/complete");
     } catch (error) {
       console.error("Upload failed:", error);
     }

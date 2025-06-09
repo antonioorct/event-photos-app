@@ -12,6 +12,7 @@ import UploadFromGallery from "@/pages/upload-gallery";
 import UploadFromCamera from "@/pages/upload-camera";
 import ImageDetail from "@/pages/image-detail";
 import Slideshow from "@/pages/slideshow";
+import UploadComplete from "@/pages/upload-complete";
 
 type Route = {
   path: string;
@@ -52,6 +53,10 @@ export const paths = {
   uploadFromCamera: {
     path: "/upload-from-camera",
     element: <UploadFromCamera />,
+  },
+  completed: {
+    path: "/upload/complete",
+    element: <UploadComplete />,
   },
 } satisfies { [key: string]: Route };
 
