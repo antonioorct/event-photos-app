@@ -65,7 +65,7 @@ export default function UploadFromCamera() {
                 // Flip horizontally
                 ctx.scale(-1, 1);
                 ctx.drawImage(img, -img.width, 0);
-                finalPhoto = canvas.toDataURL("image/jpeg", 0.8);
+                finalPhoto = canvas.toDataURL("image/jpeg", 1);
               }
               resolve(void 0);
             };
