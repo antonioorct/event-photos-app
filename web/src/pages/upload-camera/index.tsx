@@ -106,22 +106,20 @@ export default function UploadFromCamera() {
   return (
     <div className="w-full h-dvh bg-black relative overflow-hidden">
       {/* Camera View */}
-      <div className="w-full h-full">
-        <div className={`w-full h-full`}>
-          <Camera
-            ref={camera}
-            aspectRatio={16 / 9}
-            errorMessages={{
-              noCameraAccessible:
-                "Kamera nije dostupna. Molimo spojite kameru ili pokušajte drugi pregljednik.",
-              permissionDenied:
-                "Dozvola odbijena. Molimo osvježite stranicu i dajte dozvolu za kameru.",
-              switchCamera:
-                "Nije moguće prebaciti kameru jer je dostupna samo jedna.",
-              canvas: "Canvas nije podržan.",
-            }}
-          />
-        </div>
+      <div className="w-full h-dvh flex items-center justify-center">
+        <Camera
+          ref={camera}
+          aspectRatio={9 / 16}
+          errorMessages={{
+            noCameraAccessible:
+              "Kamera nije dostupna. Molimo spojite kameru ili pokušajte drugi pregljednik.",
+            permissionDenied:
+              "Dozvola odbijena. Molimo osvježite stranicu i dajte dozvolu za kameru.",
+            switchCamera:
+              "Nije moguće prebaciti kameru jer je dostupna samo jedna.",
+            canvas: "Canvas nije podržan.",
+          }}
+        />
       </div>
 
       {/* Upload Status Overlay */}
