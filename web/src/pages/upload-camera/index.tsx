@@ -5,11 +5,7 @@ import { useUploadImage } from "@/hooks/api/mutations/images";
 
 export default function UploadFromCamera() {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [facingMode, setFacingMode] = useState<"user" | "environment">(
-    "environment",
-  );
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [isFlipped, setIsFlipped] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const camera = useRef<{
@@ -48,33 +44,7 @@ export default function UploadFromCamera() {
       const photo = camera.current.takePhoto();
 
       try {
-        let finalPhoto = photo;
-
-        if (isFlipped) {
-          // Create a canvas to flip the image
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-          const img = new Image();
-
-          await new Promise((resolve) => {
-            img.onload = () => {
-              canvas.width = img.width;
-              canvas.height = img.height;
-
-              if (ctx) {
-                // Flip horizontally
-                ctx.scale(-1, 1);
-                ctx.drawImage(img, -img.width, 0);
-                finalPhoto = canvas.toDataURL("image/jpeg", 1);
-              }
-              resolve(void 0);
-            };
-            img.src = photo;
-          });
-        }
-
-        // Convert to file and upload immediately
-        const response = await fetch(finalPhoto);
+        const response = await fetch(photo);
         const blob = await response.blob();
         const file = new File([blob], `kamera-${Date.now()}.jpg`, {
           type: "image/jpeg",
@@ -92,13 +62,8 @@ export default function UploadFromCamera() {
 
   const switchCamera = () => {
     if (camera.current && !isUploading) {
-      const newFacingMode = camera.current.switchCamera();
-      setFacingMode(newFacingMode);
+      camera.current.switchCamera();
     }
-  };
-
-  const toggleFlip = () => {
-    setIsFlipped(!isFlipped);
   };
 
   const cancelCapture = () => {
@@ -142,11 +107,10 @@ export default function UploadFromCamera() {
     <div className="w-full h-dvh bg-black relative overflow-hidden">
       {/* Camera View */}
       <div className="w-full h-full">
-        <div className={`w-full h-full ${isFlipped ? "scale-x-[-1]" : ""}`}>
+        <div className={`w-full h-full`}>
           <Camera
             ref={camera}
-            aspectRatio="cover"
-            facingMode={facingMode}
+            aspectRatio={16 / 9}
             errorMessages={{
               noCameraAccessible:
                 "Kamera nije dostupna. Molimo spojite kameru ili pokušajte drugi pregljednik.",
