@@ -13,23 +13,30 @@ class SlideshowQueue {
   }
 
   updateImages(newImages: string[]) {
-    const unseenImages = newImages.filter((img) => !this.queue.includes(img));
-
-    if (unseenImages.length === 0) {
-      return false;
-    }
-
+    // If no images in queue yet, just set the new images
     if (this.queue.length === 0) {
       this.queue = [...newImages];
       this.currentIndex = 0;
-      return true;
+      return newImages.length > 0;
     }
 
+    // Since images are never deleted and new ones are always added to the end,
+    // we just need to check if there are more images than before
+    if (newImages.length <= this.queue.length) {
+      return false; // No new images
+    }
+
+    // Get the new images (they will be at the end of the array)
+    const newImageCount = newImages.length - this.queue.length;
+    const addedImages = newImages.slice(-newImageCount);
+
+    // Insert new images right after the current position
     const nextIndex = (this.currentIndex + 1) % this.queue.length;
     const beforeNext = this.queue.slice(0, nextIndex);
     const afterNext = this.queue.slice(nextIndex);
 
-    this.queue = [...beforeNext, ...unseenImages, ...afterNext];
+    // Reconstruct queue with new images inserted after current position
+    this.queue = [...beforeNext, ...addedImages, ...afterNext];
 
     return true;
   }
@@ -77,6 +84,55 @@ export default function Slideshow() {
   const [isStarted, setIsStarted] = useState(false);
   const [intervalSeconds, setIntervalSeconds] = useState(10);
   const queueRef = useRef<SlideshowQueue>(new SlideshowQueue());
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+
+  // Screen Wake Lock functionality
+  const requestWakeLock = async () => {
+    try {
+      if ("wakeLock" in navigator) {
+        wakeLockRef.current = await navigator.wakeLock.request("screen");
+        console.log("Screen wake lock activated");
+      }
+    } catch (err) {
+      console.error("Failed to activate screen wake lock:", err);
+    }
+  };
+
+  const releaseWakeLock = async () => {
+    if (wakeLockRef.current) {
+      try {
+        await wakeLockRef.current.release();
+        wakeLockRef.current = null;
+        console.log("Screen wake lock released");
+      } catch (err) {
+        console.error("Failed to release screen wake lock:", err);
+      }
+    }
+  };
+
+  // Handle visibility change to re-request wake lock if needed
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (
+        isStarted &&
+        document.visibilityState === "visible" &&
+        !wakeLockRef.current
+      ) {
+        requestWakeLock();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [isStarted]);
+
+  // Clean up wake lock on unmount
+  useEffect(() => {
+    return () => {
+      releaseWakeLock();
+    };
+  }, []);
 
   useEffect(() => {
     if (!images || images.length === 0) {
@@ -104,8 +160,9 @@ export default function Slideshow() {
     return () => clearInterval(timer);
   }, [isStarted, intervalSeconds]);
 
-  const startSlideshow = () => {
+  const startSlideshow = async () => {
     setIsStarted(true);
+    await requestWakeLock(); // Request wake lock when starting slideshow
     if (queueRef.current.hasImages()) {
       const firstImage = queueRef.current.getCurrentImage();
       setCurrentImage(firstImage);

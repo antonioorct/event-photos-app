@@ -34,6 +34,26 @@ export default function UploadComplete() {
         <p className="text-lg font-bold">18.06.2025</p>
       </div>
 
+      <div className="text-center w-full">
+        <Link
+          to="/images"
+          className="w-full flex justify-center items-center border-2 border-black text-black font-semibold py-4 px-12 rounded-xl hover:bg-gray-100 transition-colors duration-200 text-lg mb-3">
+          Povratak u galeriju
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 ml-4 mt-0.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M14 5l7 7m0 0l-7 7m7-7H3"
+            />
+          </svg>
+        </Link>
+      </div>
       {/* Upload Button */}
       <div className="text-center w-full">
         <Link
