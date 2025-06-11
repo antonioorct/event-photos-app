@@ -68,7 +68,7 @@ export default function UploadFromGallery() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-dvh bg-gray-50 p-4">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <Link
