@@ -3,7 +3,7 @@ name: Build and push to DOCR - Web
 on:
   push:
     branches:
-      - prod
+      - master
     paths:
       - "web/**"
   workflow_dispatch:
