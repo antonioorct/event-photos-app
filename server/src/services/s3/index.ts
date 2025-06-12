@@ -10,7 +10,7 @@ import {
 import JSZip from "jszip";
 
 export const s3Client = new S3({
-    forcePathStyle: false,
+    forcePathStyle: config.env.dev,
     endpoint: config.s3.endpoint,
     region: config.s3.region,
     credentials: {
@@ -118,6 +118,8 @@ export async function downloadAndZipS3Directory(
 export function getPublicUrlForFile(fileName: string) {
     const endpoint = new URL(config.s3.cdnEndpoint);
     return `${
-        config.env.dev ? "http://localhost:4566/" : endpoint.toString()
+        config.env.dev
+            ? `http://localhost:4566/${config.s3.bucket}/`
+            : endpoint.toString()
     }${fileName}`;
 }

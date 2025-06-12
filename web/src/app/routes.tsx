@@ -68,39 +68,12 @@ export function AppRoutes() {
           .filter((route) => !!route.element)
           .map(({ path, element, ...route }) =>
             "protected" in route && route.protected === true ? (
-              <ReactRouterRoute
-                key={path}
-                path={path}
-                element={
-                  /:\w+/.test(path) ? (
-                    <DynamicRouteWrapper>{element}</DynamicRouteWrapper>
-                  ) : (
-                    element
-                  )
-                }
-              />
+              <ReactRouterRoute key={path} path={path} element={element} />
             ) : (
-              <ReactRouterRoute
-                key={path}
-                path={path}
-                element={
-                  /:\w+/.test(path) ? (
-                    <DynamicRouteWrapper>{element}</DynamicRouteWrapper>
-                  ) : (
-                    element
-                  )
-                }
-              />
+              <ReactRouterRoute key={path} path={path} element={element} />
             ),
           )}
       </Routes>
     </BrowserRouter>
   );
-}
-
-// Wrapper to ensure that the dynamic route is re-rendered when the params change
-function DynamicRouteWrapper({ children }: { children: React.ReactNode }) {
-  const params = useParams();
-
-  return <Fragment key={Object.values(params).join("-")}>{children}</Fragment>;
 }

@@ -4,73 +4,51 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 class SlideshowQueue {
+  private images: string[] = [];
   private queue: string[] = [];
-  private currentIndex: number = 0;
-  private shownImages: Set<string> = new Set();
 
   constructor(initialImages: string[] = []) {
+    this.images = [...initialImages];
     this.queue = [...initialImages];
   }
 
   updateImages(newImages: string[]) {
-    // If no images in queue yet, just set the new images
-    if (this.queue.length === 0) {
-      this.queue = [...newImages];
-      this.currentIndex = 0;
-      return newImages.length > 0;
-    }
-
-    // Since images are never deleted and new ones are always added to the end,
-    // we just need to check if there are more images than before
-    if (newImages.length <= this.queue.length) {
-      return false; // No new images
-    }
-
-    // Get the new images (they will be at the end of the array)
-    const newImageCount = newImages.length - this.queue.length;
+    const newImageCount = newImages.length - this.images.length;
     const addedImages = newImages.slice(-newImageCount);
+    this.queue.unshift(...addedImages);
 
-    // Insert new images right after the current position
-    const nextIndex = (this.currentIndex + 1) % this.queue.length;
-    const beforeNext = this.queue.slice(0, nextIndex);
-    const afterNext = this.queue.slice(nextIndex);
+    this.images = [...newImages];
 
-    // Reconstruct queue with new images inserted after current position
-    this.queue = [...beforeNext, ...addedImages, ...afterNext];
-
-    return true;
+    return;
   }
 
   next(): string | null {
     if (this.queue.length === 0) {
-      return null;
+      if (this.images.length === 0) {
+        return null;
+      }
+      this.queue = [...this.images];
     }
 
-    const currentImage = this.queue[this.currentIndex];
-    this.shownImages.add(currentImage);
-
-    this.currentIndex = (this.currentIndex + 1) % this.queue.length;
-
-    if (this.currentIndex === 0) {
-      this.shownImages.clear();
-    }
-
-    return this.queue[this.currentIndex];
+    return this.queue.shift() || null;
   }
 
   getCurrentImage(): string | null {
     if (this.queue.length === 0) {
-      return null;
+      if (this.images.length === 0) {
+        return null;
+      }
+      this.queue = [...this.images];
     }
-    return this.queue[this.currentIndex];
+    return this.queue[0] || null;
   }
 
   hasImages(): boolean {
-    return this.queue.length > 0;
+    return this.images.length > 0;
   }
 
   getImageCount(): number {
-    return this.queue.length;
+    return this.images.length;
   }
 }
 
@@ -138,14 +116,13 @@ export default function Slideshow() {
     if (!images || images.length === 0) {
       return;
     }
-
+    console.log("Updating images", images);
     queueRef.current.updateImages(images);
-
     if (!currentImage && queueRef.current.hasImages()) {
       const firstImage = queueRef.current.getCurrentImage();
       setCurrentImage(firstImage);
     }
-  }, [images, currentImage]);
+  }, [images]);
 
   useEffect(() => {
     if (!isStarted || !queueRef.current.hasImages()) {

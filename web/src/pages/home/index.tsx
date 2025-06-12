@@ -17,9 +17,7 @@ export default function Homepage() {
 
         {/* SAMO LJUBAV Text */}
         <div className="text-center mb-8">
-          <h2
-            className="text-3xl text-gray-800 tracking-widest font-semibold"
-            style={{ fontFamily: "Times New Roman, serif" }}>
+          <h2 className="text-3xl text-gray-800 tracking-widest font-semibold">
             SAMO LJUBAV ♥
           </h2>
         </div>
@@ -29,7 +27,7 @@ export default function Homepage() {
           <h1
             className="text-[26px] font-bold"
             style={{ fontFamily: "Montserrat, sans-serif" }}>
-            Lidija&Kruno Wedding
+            Lidija & Kruno Wedding
           </h1>
         </div>
 
