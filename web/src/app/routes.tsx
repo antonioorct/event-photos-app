@@ -1,16 +1,8 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route as ReactRouterRoute,
-  useParams,
-} from "react-router-dom";
-import { Fragment } from "react/jsx-runtime";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ImagesList from "@/pages/list";
 import Homepage from "@/pages/home";
 import UploadPage from "@/pages/upload";
 import UploadFromGallery from "@/pages/upload-gallery";
-import UploadFromCamera from "@/pages/upload-camera";
-import ImageDetail from "@/pages/image-detail";
 import Slideshow from "@/pages/slideshow";
 import UploadComplete from "@/pages/upload-complete";
 
@@ -26,17 +18,9 @@ export const paths = {
     path: "/",
     element: <Homepage />,
   },
-  login: {
-    path: "/auth",
-    element: null,
-  },
   images: {
     path: "/images",
     element: <ImagesList />,
-  },
-  imageDetail: {
-    path: "/images/:key",
-    element: <ImageDetail />,
   },
   slideshow: {
     path: "/slideshow",
@@ -50,30 +34,19 @@ export const paths = {
     path: "/upload-from-gallery",
     element: <UploadFromGallery />,
   },
-  uploadFromCamera: {
-    path: "/upload-from-camera",
-    element: <UploadFromCamera />,
-  },
   completed: {
     path: "/upload/complete",
     element: <UploadComplete />,
   },
 } satisfies { [key: string]: Route };
 
+const router = createBrowserRouter(
+  Object.values(paths).map(({ path, element }) => ({
+    path,
+    element,
+  })),
+);
+
 export function AppRoutes() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {Object.values(paths)
-          .filter((route) => !!route.element)
-          .map(({ path, element, ...route }) =>
-            "protected" in route && route.protected === true ? (
-              <ReactRouterRoute key={path} path={path} element={element} />
-            ) : (
-              <ReactRouterRoute key={path} path={path} element={element} />
-            ),
-          )}
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 }

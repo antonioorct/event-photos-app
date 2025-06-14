@@ -43,6 +43,10 @@ class SlideshowQueue {
     return this.queue[0] || null;
   }
 
+  getNextImage(): string | null {
+    return this.queue[1] || this.images[0] || null;
+  }
+
   hasImages(): boolean {
     return this.images.length > 0;
   }
@@ -117,7 +121,7 @@ export default function Slideshow() {
       return;
     }
     console.log("Updating images", images);
-    queueRef.current.updateImages(images);
+    queueRef.current.updateImages(images.map((image) => image.url));
     if (!currentImage && queueRef.current.hasImages()) {
       const firstImage = queueRef.current.getCurrentImage();
       setCurrentImage(firstImage);
@@ -389,6 +393,8 @@ export default function Slideshow() {
     );
   }
 
+  const nextImage = queueRef.current.getNextImage();
+
   return (
     <div
       style={{
@@ -407,6 +413,15 @@ export default function Slideshow() {
           objectFit: "contain",
         }}
       />
+      {nextImage && nextImage !== currentImage && (
+        <img
+          src={nextImage}
+          alt="Next slideshow image"
+          style={{
+            display: "none",
+          }}
+        />
+      )}
     </div>
   );
 }

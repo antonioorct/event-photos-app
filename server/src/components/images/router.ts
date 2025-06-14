@@ -1,8 +1,5 @@
-import {
-    listFilesInDirectory,
-    getPublicUrlForFile,
-    saveFileToS3,
-} from "@/services/s3";
+import { getPublicUrlForFile, saveFileToS3 } from "@/services/s3";
+import { imageDB } from "@/services/db/image-db";
 import { route } from "@/utils/routes";
 import { Router } from "express";
 import multer from "multer";
@@ -16,13 +13,8 @@ export default (app: Router) => {
             path: "/images",
         },
         async () => {
-            const response = await listFilesInDirectory("images");
-
-            return (
-                response.Contents?.map((file) =>
-                    file.Key ? getPublicUrlForFile(file.Key) : null,
-                ).filter(Boolean) || []
-            );
+            const images = await imageDB.getAllImages();
+            return images;
         },
     );
 
@@ -33,14 +25,13 @@ export default (app: Router) => {
             params: ["key"],
         },
         async ({ params }) => {
-            const imageKey = `images/${params.key}`;
-            const url = getPublicUrlForFile(imageKey);
+            const image = await imageDB.getImageByFilename(params.key);
 
-            return {
-                key: imageKey,
-                url: url,
-                filename: params.key,
-            };
+            if (!image) {
+                throw new Error("Image not found");
+            }
+
+            return image;
         },
     );
 
@@ -50,9 +41,25 @@ export default (app: Router) => {
         }
 
         const fileName = `images/${Date.now()}-${req.file.originalname}`;
-        await saveFileToS3(req.file.buffer, fileName, req.file.mimetype);
-        const url = getPublicUrlForFile(fileName);
+        const result = await saveFileToS3(
+            req.file.buffer,
+            fileName,
+            req.file.mimetype,
+        );
+        const url = getPublicUrlForFile(result.fileName);
 
-        res.json({ url });
+        await imageDB.addImage(
+            result.fileName,
+            url,
+            result.dimensions?.width || null,
+            result.dimensions?.height || null,
+            req.file.size,
+        );
+
+        res.json({
+            url,
+            width: result.dimensions?.width,
+            height: result.dimensions?.height,
+        });
     });
 };

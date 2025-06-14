@@ -8,6 +8,7 @@ import {
     S3,
 } from "@aws-sdk/client-s3";
 import JSZip from "jszip";
+import sharp from "sharp";
 
 export const s3Client = new S3({
     forcePathStyle: config.env.dev,
@@ -19,29 +20,73 @@ export const s3Client = new S3({
     },
 });
 
+interface ImageDimensions {
+    width: number;
+    height: number;
+}
+
+/**
+ * Get image dimensions from buffer
+ * @param fileBuffer - The image buffer
+ * @returns Object with width and height, or null if not an image
+ */
+export async function getImageDimensions(
+    fileBuffer: Buffer,
+): Promise<ImageDimensions | null> {
+    try {
+        const metadata = await sharp(fileBuffer).metadata();
+        if (metadata.width && metadata.height) {
+            return {
+                width: metadata.width,
+                height: metadata.height,
+            };
+        }
+        return null;
+    } catch {
+        return null;
+    }
+}
+
 /**
  * Save a file to S3 and return the URL for the uploaded file
  * @param fileBuffer - The file buffer to save
  * @param fileName - The name of the file to save, if there are subdirectories, they should be included in this parameter
  * @param contentType - Optional MIME type of the file
- * @returns The URL for the uploaded file
+ * @returns The URL for the uploaded file along with dimensions if it's an image
  */
 export async function saveFileToS3(
     fileBuffer: Buffer,
     fileName: string,
     contentType?: string,
 ) {
+    let dimensions: ImageDimensions | null = null;
+    let metadata: Record<string, string> = {};
+
+    if (contentType?.startsWith("image/")) {
+        dimensions = await getImageDimensions(fileBuffer);
+        if (dimensions) {
+            metadata = {
+                width: dimensions.width.toString(),
+                height: dimensions.height.toString(),
+            };
+        }
+    }
+
     const command = new PutObjectCommand({
         Bucket: config.s3.bucket,
         Key: fileName,
         Body: fileBuffer,
         ContentType: contentType,
         ACL: "public-read",
+        Metadata: metadata,
     });
 
     await s3Client.send(command);
 
-    return fileName;
+    return {
+        fileName,
+        dimensions,
+    };
 }
 
 export function getFileFromS3(fileName: string) {
