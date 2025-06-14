@@ -24,11 +24,14 @@ export function imageGalleryStyles(
     const imageContainerStyle: React.CSSProperties = {
         margin: 0,
         position: "relative",
+        height: "100%",
     };
     const imageStyle: React.CSSProperties = {
         aspectRatio: "1/1 auto",
         backgroundColor: "#D3D3D3",
         cursor: "pointer",
+        height: "100%",
+        objectFit: "cover",
     };
     const imageCaptionStyle: React.CSSProperties = {
         opacity: fixedCaption ? 1 : 0,
