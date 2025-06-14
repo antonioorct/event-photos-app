@@ -61,11 +61,7 @@ export default function UploadComplete() {
       </div>
 
       <div className="text-center mb-2">
-        <h1
-          className="text-[26px] font-bold"
-          style={{ fontFamily: "Montserrat, sans-serif" }}>
-          Lidija & Kruno Wedding
-        </h1>
+        <h1 className="text-[26px] font-bold">Lidija & Kruno Wedding</h1>
       </div>
 
       {/* Date */}
