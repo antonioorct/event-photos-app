@@ -8,9 +8,6 @@ export function imageGalleryStyles(
 ): ImageGalleryStylesType {
     const modalThumbnailSectionHeight = "20vh";
     const galleryContainerStyle: React.CSSProperties = {
-        // columnCount,
-        // columnWidth: `${columnWidth}px`,
-        // columnGap: `${gapSize}px`,
         display: "grid",
         gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
         gap: `${gapSize}px`,
@@ -20,18 +17,14 @@ export function imageGalleryStyles(
         background: "none",
         margin: 0,
         padding: 0,
-    };
-    const imageContainerStyle: React.CSSProperties = {
-        margin: 0,
-        position: "relative",
-        height: "100%",
+        display: "block",
     };
     const imageStyle: React.CSSProperties = {
-        aspectRatio: "1/1 auto",
         backgroundColor: "#D3D3D3",
         cursor: "pointer",
-        height: "100%",
         objectFit: "cover",
+        width: "100%",
+        height: "100%",
     };
     const imageCaptionStyle: React.CSSProperties = {
         opacity: fixedCaption ? 1 : 0,
@@ -128,7 +121,6 @@ export function imageGalleryStyles(
     return {
         galleryContainerStyle,
         imageBtnStyle,
-        imageContainerStyle,
         imageStyle,
         imageCaptionStyle,
         modalContainerStyle,

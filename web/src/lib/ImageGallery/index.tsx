@@ -166,8 +166,10 @@ export function ImageGallery({
                 imageInfo.mediaSizes,
               )
             }>
-            <figure
-              style={imageContainerStyle}
+            <div
+              style={{
+                height: "100%",
+              }}
               onMouseEnter={(e) =>
                 fixedCaption ? undefined : handleImageContainerMouseEnter(e)
               }
@@ -197,7 +199,7 @@ export function ImageGallery({
               ) : (
                 ""
               )}
-            </figure>
+            </div>
           </button>
         );
       }
