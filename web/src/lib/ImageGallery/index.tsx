@@ -16,7 +16,6 @@ export function ImageGallery({
 }: ImageGalleryPropsType) {
   const [imgSrcInfo, setImgSrcInfo] = useState<ImgSrcInfoType | null>(null);
   const [slideNumber, setSlideNumber] = useState(1);
-  const [showModalControls, setShowModalControls] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement | null>(null);
@@ -54,18 +53,27 @@ export function ImageGallery({
     setTouchEnd(e.targetTouches[0].clientX);
   };
 
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-
-    if (isLeftSwipe) {
-      scrollImage(false, 1, 0);
-    } else if (isRightSwipe) {
-      scrollImage(false, -1, 0);
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart === null) {
+      return;
     }
+
+    const touch = e.changedTouches[0];
+    if (touch) {
+      const touchEndPosition = touch.clientX;
+      const distance = touchStart - touchEndPosition;
+      const isLeftSwipe = distance > minSwipeDistance;
+      const isRightSwipe = distance < -minSwipeDistance;
+
+      if (isLeftSwipe) {
+        scrollImage(false, 1, 0);
+      } else if (isRightSwipe) {
+        scrollImage(false, -1, 0);
+      }
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
   };
 
   function handleImageContainerMouseEnter(
@@ -220,25 +228,15 @@ export function ImageGallery({
         tabIndex={-1}
         style={modalContainerStyle}
         onKeyDown={(e) => handleKeyDownOnModal(e)}
-        onMouseEnter={() => setShowModalControls(true)}
-        onMouseLeave={() => setShowModalControls(false)}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-        onClick={(e) =>
-          (e.target as HTMLElement).tagName === "SECTION" &&
-          (showModalControls
-            ? handleImageContainerMouseLeave(e)
-            : handleImageContainerMouseEnter(e))
-        }>
+        onTouchEnd={onTouchEnd}>
         <span
           style={{
-            opacity: showModalControls ? 1 : 0,
             ...modalSlideNumberStyle,
           }}>{`${slideNumber} / ${imagesInfoArray.length}`}</span>
         <span
           style={{
-            opacity: showModalControls ? 1 : 0,
             ...modalToolbarStyle,
           }}>
           <button
@@ -261,7 +259,6 @@ export function ImageGallery({
             type="button"
             aria-label="Previous image"
             style={{
-              opacity: showModalControls ? 1 : 0,
               left: 5,
               bottom: 20,
               ...modalSlideBtnStyle,
@@ -289,7 +286,7 @@ export function ImageGallery({
               sizes={imgSrcInfo?.mediaSizes}
               alt={imagesInfoArray[slideNumber - 1].alt}
               style={{
-                maxHeight: "100vh",
+                maxHeight: "100dvh",
                 ...modalImageStyle,
               }}
             />
@@ -305,7 +302,6 @@ export function ImageGallery({
             type="button"
             aria-label="Next image"
             style={{
-              opacity: showModalControls ? 1 : 0,
               right: 5,
               bottom: 20,
               ...modalSlideBtnStyle,
