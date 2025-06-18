@@ -175,7 +175,7 @@ export default function Slideshow() {
     return (
       <div
         style={{
-          minHeight: "100vh",
+          minHeight: "100dvh",
           backgroundColor: "#000000",
           display: "flex",
           alignItems: "center",
@@ -196,7 +196,7 @@ export default function Slideshow() {
     return (
       <div
         style={{
-          minHeight: "100vh",
+          minHeight: "100dvh",
           backgroundColor: "#000000",
           display: "flex",
           alignItems: "center",
@@ -217,7 +217,7 @@ export default function Slideshow() {
     return (
       <div
         style={{
-          minHeight: "100vh",
+          minHeight: "100dvh",
           backgroundColor: "#000000",
           display: "flex",
           alignItems: "center",
@@ -376,7 +376,7 @@ export default function Slideshow() {
     return (
       <div
         style={{
-          minHeight: "100vh",
+          minHeight: "100dvh",
           backgroundColor: "#000000",
           display: "flex",
           alignItems: "center",
@@ -399,7 +399,7 @@ export default function Slideshow() {
     <div
       style={{
         width: "100%",
-        height: "100vh",
+        height: "100dvh",
         backgroundColor: "#000000",
         display: "flex",
         alignItems: "center",

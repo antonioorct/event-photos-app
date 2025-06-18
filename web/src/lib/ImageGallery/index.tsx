@@ -254,7 +254,7 @@ export function ImageGallery({
         </span>
         <section
           style={{
-            height: "100vh",
+            height: "100dvh",
             ...modalSlideShowSectionStyle,
           }}>
           <button
